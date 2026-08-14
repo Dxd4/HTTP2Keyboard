@@ -1,0 +1,8 @@
+{
+  "connections": [],
+  "prefixes": [],
+  "suffixes": ["key:enter"],
+  "replacements": {
+    "\u001d": "↔"
+  }
+}

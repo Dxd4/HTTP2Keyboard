@@ -1,0 +1,30 @@
+{
+  "dashboard": {
+    "title": "Scanner Management"
+  },
+  "scanners": {
+    "available": {
+      "title": "Available Scanners",
+      "activate": "Activate",
+      "active": "Active"
+    }
+  },
+  "polling": {
+    "controls": {
+      "title": "Polling Control"
+    },
+    "status": {
+      "running": "Polling running",
+      "stopped": "Polling stopped"
+    },
+    "currentScanner": "Current scanner",
+    "none": "None",
+    "start": "Start",
+    "stop": "Stop"
+  },
+  "settings": {
+    "scanner2http": {
+      "url": "Scanner2HTTP server URL"
+    }
+  }
+}

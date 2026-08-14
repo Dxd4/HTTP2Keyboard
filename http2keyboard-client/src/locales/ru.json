@@ -1,0 +1,30 @@
+{
+  "dashboard": {
+    "title": "Управление сканерами"
+  },
+  "scanners": {
+    "available": {
+      "title": "Доступные сканеры",
+      "activate": "Активировать",
+      "active": "Активен"
+    }
+  },
+  "polling": {
+    "controls": {
+      "title": "Управление опросом"
+    },
+    "status": {
+      "running": "Опрос запущен",
+      "stopped": "Опрос остановлен"
+    },
+    "currentScanner": "Текущий сканер",
+    "none": "Нет",
+    "start": "Запустить",
+    "stop": "Остановить"
+  },
+  "settings": {
+    "scanner2http": {
+      "url": "URL сервера scanner2http"
+    }
+  }
+}
