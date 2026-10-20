@@ -24,10 +24,12 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { useScanner2HttpStore } from '@/stores/scanner2httpStore'
   import { useScannerStore } from '@/stores/scannerStore'
 
   const scannerStore = useScannerStore()
-  const { availableScanners } = scannerStore
+  const scanner2httpStore = useScanner2HttpStore()
+  const { availableScanners } = scanner2httpStore
 
   const headers = [
     { title: 'ID', key: 'id' },
