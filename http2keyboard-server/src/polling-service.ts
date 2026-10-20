@@ -62,9 +62,6 @@ class PollingService {
         });
 
         if (!response.ok) {
-          console.warn(
-            `Polling request failed with status: ${response.status}`,
-          );
           continue;
         }
 
