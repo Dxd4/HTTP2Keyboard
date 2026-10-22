@@ -1,26 +1,26 @@
 import AsyncLock from 'async-lock';
-import { Config } from './config';
 import { Keyboard } from './keyboard/keyboard';
-import { saveSettings, loadSettings, Settings } from './settings';
 import PollingService from './polling-service';
+import Scanner2HttpClient from './scanner2http/client';
+import { loadSettings, saveSettings, Settings } from './settings';
 
 class Manager {
-  private config: Config;
   private keyboard: Keyboard;
   private settings: Settings;
   private pollingService: PollingService;
+  private scanner2http: Scanner2HttpClient;
   private lock = new AsyncLock();
 
   constructor(
-    config: Config,
     keyboard: Keyboard,
     settings: Settings,
     pollingService: PollingService,
+    scanner2http: Scanner2HttpClient,
   ) {
-    this.config = config;
     this.keyboard = keyboard;
     this.settings = settings;
     this.pollingService = pollingService;
+    this.scanner2http = scanner2http;
   }
 
   getCurrentScanner() {
@@ -39,7 +39,7 @@ class Manager {
     try {
       const scanner = this.getCurrentScanner();
       if (!scanner) return null;
-      return `http://${this.config.s2hHost}:${this.config.s2hPort}/scanners/${scanner.scannerId}/poll`;
+      return this.scanner2http.getPollUrl(scanner.scannerId);
     } catch {
       return null;
     }
@@ -54,16 +54,38 @@ class Manager {
   }
 
   async isScannerAlive(scannerId: string): Promise<boolean> {
-    try {
-      const url = new URL(
-        `http://${this.config.s2hHost}:${this.config.s2hPort}/scanners/${scannerId}/isAlive`,
-      );
-      const response = await fetch(url.toString());
-      return response.ok;
-    } catch (error) {
-      console.error(`Failed to check if scanner ${scannerId} is alive:`, error);
+    return this.scanner2http.isScannerAlive(scannerId);
+  }
+
+  async selectFirstAvailableScanner(): Promise<boolean> {
+    if (this.settings.connections.length > 0) {
       return false;
     }
+
+    const scanners = await this.scanner2http.fetchAvailableScanners();
+    if (scanners.length < 1) {
+      console.warn('No available scanners found');
+      return false;
+    }
+
+    for (const scanner of scanners) {
+      const isAlive = await this.isScannerAlive(scanner.id);
+      if (!isAlive) continue;
+
+      try {
+        await this.activateScanner(scanner.id);
+        console.log(`Selected first available scanner: ${scanner.id}`);
+        return true;
+      } catch (error) {
+        console.error(
+          `Failed to activate scanner ${scanner.id}, next try:`,
+          error,
+        );
+      }
+    }
+
+    console.warn('No alive scanners found');
+    return false;
   }
 
   public async activateScanner(scannerId: string): Promise<void> {
@@ -96,6 +118,9 @@ class Manager {
   }
 
   startPolling() {
+    if (this.getIsPolling()) {
+      return;
+    }
     this.pollingService.start(this.getScannerUrl()).catch(console.error);
   }
 
