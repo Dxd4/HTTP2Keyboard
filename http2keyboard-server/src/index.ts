@@ -31,6 +31,9 @@ async function main() {
 
   const server = new HTTPServer(config, manager);
   await server.start();
+  console.info(
+    `HTTP2Scanner server started on http://${config.host}:${config.port}`,
+  );
 }
 
 void main();
