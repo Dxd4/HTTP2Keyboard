@@ -29,8 +29,9 @@
     "typescript-eslint": "^8.62.0"
   },
   "dependencies": {
-    "async-lock": "^1.4.1",
     "@fastify/http-proxy": "^11.0.0",
+    "@fastify/static": "^10.1.7",
+    "async-lock": "^1.4.1",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "fastify-type-provider-zod": "^7.0.0",

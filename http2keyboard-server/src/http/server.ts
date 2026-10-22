@@ -1,4 +1,5 @@
 import fastifyHttpProxy from '@fastify/http-proxy';
+import fastifyStatic from '@fastify/static';
 import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
 import {
@@ -6,6 +7,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import path from 'node:path';
 import { Config } from '../config';
 import Manager from '../manager';
 import routes from './routes';
@@ -45,6 +47,12 @@ class HTTPServer {
       upstream: `http://${this.config.s2hHost}:${this.config.s2hPort}`,
       prefix: '/scanner2http',
       rewritePrefix: '',
+    });
+
+    await this.fastify.register(fastifyStatic, {
+      root: path.join(__dirname, '..', 'public'),
+      prefix: '/',
+      wildcard: false,
     });
 
     await this.fastify.listen({
