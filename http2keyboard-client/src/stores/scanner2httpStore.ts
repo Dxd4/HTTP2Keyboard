@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchAvailableScanners, type Scanner2HttpDevice, setScanner2HttpBaseUrl } from '@/api/scanner2http'
+import { fetchAvailableScanners, type Scanner2HttpDevice } from '@/api/scanner2http'
 
 export const useScanner2HttpStore = defineStore('scanner2http', () => {
-  const scanner2httpUrl = ref<string>(
-    import.meta.env.VITE_SCANNER2HTTP_URL || 'http://localhost:55100',
-  )
   const intervalId = setInterval(() => {
     void loadAvailableScanners()
   }, 2000)
@@ -17,9 +14,8 @@ export const useScanner2HttpStore = defineStore('scanner2http', () => {
   }
 
   async function init () {
-    setScanner2HttpBaseUrl(scanner2httpUrl.value)
     await loadAvailableScanners()
   }
 
-  return { init, scanner2httpUrl, loadAvailableScanners, availableScanners }
+  return { init, loadAvailableScanners, availableScanners }
 })

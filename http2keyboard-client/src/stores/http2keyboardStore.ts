@@ -1,13 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { activateScanner, fetchPollingStatus, setHttp2KeyboardBaseUrl, startPolling, stopPolling } from '@/api/http2keyboard'
+import { activateScanner, fetchPollingStatus, startPolling, stopPolling } from '@/api/http2keyboard'
 
 export const useHttp2KeyboardStore = defineStore('http2keyboard', () => {
-  const http2keyboardServerUrl = ref<string>(
-    import.meta.env.VITE_HTTP2KEYBOARD_SERVER_URL || 'http://localhost:55110',
-  )
-  setHttp2KeyboardBaseUrl(http2keyboardServerUrl.value)
-
   const activeScannerId = ref<string>()
   const isServiceActive = ref<boolean>()
 
@@ -18,7 +13,7 @@ export const useHttp2KeyboardStore = defineStore('http2keyboard', () => {
   }
 
   async function setActiveScanner (id: string) {
-    activateScanner(id)
+    await activateScanner(id)
   }
 
   async function togglePolling () {

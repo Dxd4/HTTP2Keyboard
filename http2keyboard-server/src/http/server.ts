@@ -1,13 +1,14 @@
-import Fastify from 'fastify';
+import fastifyHttpProxy from '@fastify/http-proxy';
 import type { FastifyInstance } from 'fastify';
+import Fastify from 'fastify';
 import {
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import routes from './routes';
-import Manager from '../manager';
 import { Config } from '../config';
+import Manager from '../manager';
+import routes from './routes';
 
 class HTTPServer {
   private fastify: FastifyInstance;
@@ -38,6 +39,13 @@ class HTTPServer {
     this.fastify.setSerializerCompiler(serializerCompiler);
 
     this.fastify.register(routes, this.manager);
+
+    // Reverse proxy for Scanner2HTTP
+    await this.fastify.register(fastifyHttpProxy, {
+      upstream: `http://${this.config.s2hHost}:${this.config.s2hPort}`,
+      prefix: '/scanner2http',
+      rewritePrefix: '',
+    });
 
     await this.fastify.listen({
       host: this.config.host,

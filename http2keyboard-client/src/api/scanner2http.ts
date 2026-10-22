@@ -1,5 +1,4 @@
-import type { AxiosInstance } from 'axios'
-import axios from 'axios'
+import { api } from './client'
 
 export interface Scanner2HttpDevice {
   id: string
@@ -8,20 +7,14 @@ export interface Scanner2HttpDevice {
   productId: string
 }
 
-let scanner2httpClient: AxiosInstance
-
-export function setScanner2HttpBaseUrl (baseUrl: string) {
-  scanner2httpClient = axios.create({ baseURL: baseUrl })
-}
-
 export async function fetchAvailableScanners (): Promise<Scanner2HttpDevice[]> {
-  const response = await scanner2httpClient.get<Scanner2HttpDevice[]>('/scanners')
+  const response = await api.get<Scanner2HttpDevice[]>('/scanner2http/scanners')
   return response.data
 }
 
 export async function isScannerAlive (id: string): Promise<boolean> {
   try {
-    await scanner2httpClient.get(`/scanners/${id}/isAlive`)
+    await api.get(`/scanner2http/scanners/${id}/isAlive`)
     return true
   } catch {
     return false

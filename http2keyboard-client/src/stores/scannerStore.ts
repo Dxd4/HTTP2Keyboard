@@ -5,15 +5,11 @@ import {
   activateScanner,
   fetchPollingStatus,
   type PollingStatus,
-  setHttp2KeyboardBaseUrl,
   startPolling,
   stopPolling,
 } from '@/api/http2keyboard'
 
 export const useScannerStore = defineStore('scanner', () => {
-  const http2keyboardServerUrl = ref<string>(
-    import.meta.env.VITE_HTTP2KEYBOARD_SERVER_URL || 'http://localhost:55110',
-  )
   const pollingStatus = ref<PollingStatus>({ running: false, actualScannerId: '' })
 
   const isPollingRunning = computed(() => pollingStatus.value.running)
@@ -39,7 +35,6 @@ export const useScannerStore = defineStore('scanner', () => {
   }
 
   async function init () {
-    setHttp2KeyboardBaseUrl(http2keyboardServerUrl.value)
     await loadPollingStatus()
   }
 
