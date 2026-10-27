@@ -1,4 +1,5 @@
 import robot from 'robotjs';
+import { logger } from '../logger';
 
 export class Keyboard {
   private prefixes: string[];
@@ -22,7 +23,7 @@ export class Keyboard {
           const keyName = item.replace('key:', '').trim();
           robot.keyTap(keyName);
         } catch (error) {
-          console.error(error);
+          logger.error(error);
         }
       } else {
         robot.typeString(item);

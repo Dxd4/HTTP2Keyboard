@@ -1,4 +1,5 @@
 import { Config } from '../config';
+import { logger } from '../logger';
 import {
   AvailableScanner,
   AvailableScannerSchema,
@@ -24,7 +25,7 @@ class Scanner2HttpClient {
     try {
       const response = await fetch(`${this.getBaseUrl()}/scanners`);
       if (!response.ok) {
-        console.error(
+        logger.error(
           `Failed to fetch available scanners: ${response.status} ${response.statusText}`,
         );
         return [];
@@ -34,7 +35,10 @@ class Scanner2HttpClient {
         await response.json(),
       );
       if (!raw.success) {
-        console.error('Unexpected response from scanner2http:', raw.error);
+        logger.error(
+          { err: raw.error },
+          'Unexpected response from scanner2http',
+        );
         return [];
       }
 
@@ -42,7 +46,10 @@ class Scanner2HttpClient {
       for (const item of raw.data) {
         const result = AvailableScannerSchema.safeParse(item);
         if (!result.success) {
-          console.warn('Skipping malformed scanner entry:', result.error);
+          logger.warn(
+            { err: result.error },
+            'Skipping malformed scanner entry',
+          );
           continue;
         }
         scanners.push(result.data);
@@ -50,7 +57,7 @@ class Scanner2HttpClient {
 
       return scanners;
     } catch (error) {
-      console.error('Failed to fetch available scanners:', error);
+      logger.error({ err: error }, 'Failed to fetch available scanners');
       return [];
     }
   }
@@ -62,7 +69,10 @@ class Scanner2HttpClient {
       );
       return response.ok;
     } catch (error) {
-      console.error(`Failed to check if scanner ${scannerId} is alive:`, error);
+      logger.error(
+        { err: error },
+        `Failed to check if scanner ${scannerId} is alive`,
+      );
       return false;
     }
   }

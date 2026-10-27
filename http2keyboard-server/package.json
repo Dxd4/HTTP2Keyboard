@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .js,.ts .",
     "lint:fix": "eslint . --fix --ext .js,.ts",
     "dev": "cross-env NODE_ENV=development tsx src/index.ts",
-    "build": "tsc",
+    "build": "tsc && esbuild dist/index.js --bundle --minify --platform=node --target=node22 --external:robotjs --outfile=dist/server.js",
     "start": "cross-env NODE_ENV=production node dist/index.js"
   },
   "author": "DXD4",
@@ -22,6 +22,7 @@
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
+    "pino-pretty": "^13.2.0",
     "prettier": "^3.8.4",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.22.4",
@@ -36,9 +37,11 @@
     "fastify": "^5.8.5",
     "fastify-type-provider-zod": "^7.0.0",
     "robotjs": "^0.7.1",
+    "rotating-file-stream": "^3.2.10",
     "zod": "^4.4.3"
   },
   "allowScripts": {
-    "robotjs@0.7.1": true
+    "robotjs@0.7.1": true,
+    "esbuild@0.28.2": true
   }
 }

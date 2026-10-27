@@ -1,5 +1,6 @@
 import { Config } from './config';
 import { Keyboard } from './keyboard/keyboard';
+import { logger } from './logger';
 
 interface PollingServiceConfig {
   config: Config;
@@ -80,9 +81,9 @@ class PollingService {
           error instanceof TypeError &&
           error.message.includes('fetch failed')
         ) {
-          console.warn('Scanner connection lost or unreachable (fetch failed)');
+          logger.warn('Scanner connection lost or unreachable (fetch failed)');
         } else {
-          console.error('Error during polling:', error);
+          logger.error({ err: error }, 'Error during polling');
         }
       } finally {
         await new Promise((r) => setTimeout(r, 200));

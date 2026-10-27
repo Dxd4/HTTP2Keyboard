@@ -5,6 +5,7 @@ import Manager from './manager';
 import PollingService from './polling-service';
 import Scanner2HttpClient from './scanner2http/client';
 import { loadSettings } from './settings';
+import { logger } from './logger';
 
 async function main() {
   const settings = await loadSettings();
@@ -26,12 +27,12 @@ async function main() {
   await manager
     .selectFirstAvailableScanner()
     .catch((error) =>
-      console.error('Failed to select first available scanner:', error),
+      logger.error({ err: error }, 'Failed to select first available scanner'),
     );
 
   const server = new HTTPServer(config, manager);
   await server.start();
-  console.info(
+  logger.info(
     `HTTP2Scanner server started on http://${config.host}:${config.port}`,
   );
 }

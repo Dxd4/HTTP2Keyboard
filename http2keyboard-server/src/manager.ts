@@ -1,5 +1,6 @@
 import AsyncLock from 'async-lock';
 import { Keyboard } from './keyboard/keyboard';
+import { logger } from './logger';
 import PollingService from './polling-service';
 import Scanner2HttpClient from './scanner2http/client';
 import { loadSettings, saveSettings, Settings } from './settings';
@@ -64,7 +65,7 @@ class Manager {
 
     const scanners = await this.scanner2http.fetchAvailableScanners();
     if (scanners.length < 1) {
-      console.warn('No available scanners found');
+      logger.warn('No available scanners found');
       return false;
     }
 
@@ -74,17 +75,17 @@ class Manager {
 
       try {
         await this.activateScanner(scanner.id);
-        console.log(`Selected first available scanner: ${scanner.id}`);
+        logger.info(`Selected first available scanner: ${scanner.id}`);
         return true;
       } catch (error) {
-        console.error(
+        logger.error(
+          { err: error },
           `Failed to activate scanner ${scanner.id}, next try:`,
-          error,
         );
       }
     }
 
-    console.warn('No alive scanners found');
+    logger.warn('No alive scanners found');
     return false;
   }
 
@@ -121,7 +122,9 @@ class Manager {
     if (this.getIsPolling()) {
       return;
     }
-    this.pollingService.start(this.getScannerUrl()).catch(console.error);
+    this.pollingService
+      .start(this.getScannerUrl())
+      .catch((error) => logger.error(error));
   }
 
   async stopPolling() {
